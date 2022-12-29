@@ -2,6 +2,7 @@ import requests
 import json
 import time
 import logging
+import os
 
 # Set up logging
 logging.basicConfig(filename='save_characters.log', level=logging.INFO)
@@ -27,13 +28,17 @@ while True:
     # Get current time
     start_time = time.perf_counter()
 
-    # Generate file name with timestamp
-    file_name = f'character_names_{time.strftime("%Y-%m-%d-%H-%M-%S")}.txt'
+    # Iterate over each world
+    for world in worlds:
+        # Create a folder for each world if it doesn't already exist
+        if not os.path.exists(world):
+            os.makedirs(world)
 
-    # Open the file in write mode
-    with open(file_name, 'w') as f:
-        # Iterate over each world
-        for world in worlds:
+        # Generate file name with timestamp
+        file_name = f'{world}/character_names_{time.strftime("%Y-%m-%d-%H-%M-%S")}.txt'
+
+        # Open the file in write mode
+        with open(file_name, 'w') as f:
             # Send request to API endpoint
             response = requests.get(f'https://api.tibiadata.com/v3/world/{world}')
 
